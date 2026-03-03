@@ -124,6 +124,16 @@ const dict: Dict = {
   "Radians, unit circle, lines": { ar: "الراديان ودائرة الوحدة والخطوط" },
   "Derivative meaning, random variables": { ar: "معنى المشتقة والمتغيرات العشوائية" },
   "Teacher Prompts": { ar: "أسئلة المعلم" },
+  "Student activities": { ar: "أنشطة الطلاب" },
+  "Short, high-participation routines aligned to the lesson focus.": {
+    ar: "روتينات قصيرة عالية المشاركة متوافقة مع تركيز الدرس."
+  },
+  "Activity": { ar: "نشاط" },
+  "Student action": { ar: "إجراء الطالب" },
+  "Teacher move": { ar: "إجراء المعلم" },
+  "Grouping": { ar: "التجميع" },
+  "Time": { ar: "الوقت" },
+  "Evidence": { ar: "الدليل" },
   "Try this": { ar: "جرّب هذا" },
   "Intro": { ar: "تمهيد" },
   "Concept Check": { ar: "تحقق المفهوم" },
