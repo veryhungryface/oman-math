@@ -17,6 +17,7 @@ export default function LessonPage({ params }: LessonPageProps) {
   const title = moduleItem?.title ?? "Lesson Player";
   const subtitle = moduleItem?.subtitle ?? "Interactive lesson preview";
   const interactions = moduleItem?.interactions ?? [];
+  const activities = moduleItem?.activities ?? [];
   const prompts = moduleItem?.teacherPrompts ?? {
     intro: [],
     concept: [],
@@ -25,17 +26,11 @@ export default function LessonPage({ params }: LessonPageProps) {
   };
   const lessonRef = useRef<HTMLDivElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showPromptList, setShowPromptList] = useState(false);
-  const [activePrompt, setActivePrompt] = useState<string | null>(null);
 
   useEffect(() => {
     function handleFullscreenChange() {
       const active = Boolean(document.fullscreenElement);
       setIsFullscreen(active);
-      if (!active) {
-        setShowPromptList(false);
-        setActivePrompt(null);
-      }
     }
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
@@ -67,16 +62,43 @@ export default function LessonPage({ params }: LessonPageProps) {
             <button className="ghost-button" type="button" onClick={toggleFullscreen}>
               {isFullscreen ? t("Exit Fullscreen") : t("Fullscreen")}
             </button>
-            <button
-              className="ghost-button"
-              type="button"
-              onClick={() => setShowPromptList((prev) => !prev)}
-            >
-              {t("Teacher Prompts")}
-            </button>
           </div>
         </div>
         <LessonContent moduleId={params.moduleId} />
+        <div className="card" style={{ marginTop: "1.5rem" }}>
+          <h4>{t("Student activities")}</h4>
+          <p className="subtext">{t("Short, high-participation routines aligned to the lesson focus.")}</p>
+          <div className="activity-grid" style={{ marginTop: "1rem" }}>
+            {activities.map((activity) => (
+              <div key={activity.title} className="activity-card">
+                <div className="activity-head">
+                  <p className="detail-label">{t("Activity")}</p>
+                  <h5>{activity.title}</h5>
+                </div>
+                <div className="activity-body">
+                  <p className="detail-label">{t("Student action")}</p>
+                  <p className="detail-value">{activity.studentAction}</p>
+                  <p className="detail-label">{t("Teacher move")}</p>
+                  <p className="detail-value">{activity.teacherMove}</p>
+                  <div className="activity-meta">
+                    <div>
+                      <p className="detail-label">{t("Grouping")}</p>
+                      <p className="detail-value">{activity.grouping}</p>
+                    </div>
+                    <div>
+                      <p className="detail-label">{t("Time")}</p>
+                      <p className="detail-value">{activity.time}</p>
+                    </div>
+                    <div>
+                      <p className="detail-label">{t("Evidence")}</p>
+                      <p className="detail-value">{activity.evidence}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="module-actions" style={{ marginTop: "1.5rem" }}>
           <Link className="primary-button" href={`/assessment/${moduleItem?.id ?? "demo"}-demo`}>
             {t("Start Assessment")}
@@ -96,83 +118,35 @@ export default function LessonPage({ params }: LessonPageProps) {
         <h4 style={{ marginTop: "1.5rem" }}>{t("Teacher Prompts")}</h4>
         <div className="prompt-section">
           <p className="detail-label">{t("Intro")}</p>
-          <div className="prompt-list">
+          <ul className="list">
             {prompts.intro.map((prompt) => (
-              <button key={prompt} className="prompt-btn" type="button" onClick={() => setActivePrompt(prompt)}>
-                {prompt}
-              </button>
+              <li key={prompt}>{prompt}</li>
             ))}
-          </div>
+          </ul>
           <p className="detail-label">{t("Concept Check")}</p>
-          <div className="prompt-list">
+          <ul className="list">
             {prompts.concept.map((prompt) => (
-              <button key={prompt} className="prompt-btn" type="button" onClick={() => setActivePrompt(prompt)}>
-                {prompt}
-              </button>
+              <li key={prompt}>{prompt}</li>
             ))}
-          </div>
+          </ul>
           <p className="detail-label">{t("Apply")}</p>
-          <div className="prompt-list">
+          <ul className="list">
             {prompts.apply.map((prompt) => (
-              <button key={prompt} className="prompt-btn" type="button" onClick={() => setActivePrompt(prompt)}>
-                {prompt}
-              </button>
+              <li key={prompt}>{prompt}</li>
             ))}
-          </div>
+          </ul>
           <p className="detail-label">{t("Reason")}</p>
-          <div className="prompt-list">
+          <ul className="list">
             {prompts.reason.map((prompt) => (
-              <button key={prompt} className="prompt-btn" type="button" onClick={() => setActivePrompt(prompt)}>
-                {prompt}
-              </button>
+              <li key={prompt}>{prompt}</li>
             ))}
-          </div>
+          </ul>
         </div>
         <div style={{ marginTop: "1.5rem" }}>
           <p className="detail-label">{t("Student sync code")}</p>
           <p className="detail-value">OMN-4821</p>
         </div>
       </aside>
-      {showPromptList && (
-        <div className="prompt-overlay-panel">
-          <div className="prompt-panel-head">
-            <h4>{t("Teacher Prompts")}</h4>
-            <button className="ghost-button" type="button" onClick={() => setShowPromptList(false)}>
-              {t("Close")}
-            </button>
-          </div>
-          <div className="prompt-panel-body">
-            {[
-              { label: t("Intro"), items: prompts.intro },
-              { label: t("Concept Check"), items: prompts.concept },
-              { label: t("Apply"), items: prompts.apply },
-              { label: t("Reason"), items: prompts.reason }
-            ].map((section) => (
-              <div key={section.label} className="prompt-panel-group">
-                <p className="detail-label">{section.label}</p>
-                <div className="prompt-list">
-                  {section.items.map((prompt) => (
-                    <button key={prompt} className="prompt-btn" type="button" onClick={() => setActivePrompt(prompt)}>
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {activePrompt && (
-        <div className="prompt-overlay" onClick={() => setActivePrompt(null)}>
-          <div className="prompt-card" onClick={(e) => e.stopPropagation()}>
-            <p className="eyebrow">{t("Teacher Prompt")}</p>
-            <h3>{activePrompt}</h3>
-            <button className="primary-button" type="button" onClick={() => setActivePrompt(null)}>
-              {t("Close")}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

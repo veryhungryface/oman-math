@@ -529,6 +529,38 @@ a {
   gap: 0.8rem;
 }
 
+.activity-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.activity-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.activity-head h5 {
+  margin: 0.2rem 0 0 0;
+  font-size: 1rem;
+}
+
+.activity-body {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.activity-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
 .prompt-list {
   display: grid;
   gap: 0.5rem;
