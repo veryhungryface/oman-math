@@ -6,9 +6,7 @@ import { useI18n } from "@/lib/i18n";
 
 const navItems = [
   { href: "/teacher/home", label: "Teacher Home" },
-  { href: "/teacher/modules", label: "Modules" },
-  { href: "/lesson/B-1", label: "Lesson" },
-  { href: "/assessment/B-1-demo", label: "Assessment" },
+  { href: "/teacher/modules", label: "Lessons" },
   { href: "/report/student/OMN-001", label: "Student Report" },
   { href: "/dashboard/class/CL-8B", label: "Dashboard" },
   { href: "/admin/curriculum-map", label: "Curriculum Map" }
@@ -19,19 +17,21 @@ export default function PrimaryNav() {
 
   return (
     <nav className="primary-nav">
-      <div className="brand">
-        <Image
-          className="brand-logo"
-          src="https://www.i-screammedia.com/favicon.ico"
-          alt="i-scream math with Oman"
-          width={44}
-          height={44}
-        />
-        <div>
-          <p className="brand-title">{t("i-scream math with Oman")}</p>
-          <p className="brand-sub">{t("Cambridge-aligned math showcase")}</p>
+      <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+        <div className="brand" style={{ cursor: "pointer" }}>
+          <Image
+            className="brand-logo"
+            src="https://www.i-screammedia.com/favicon.ico"
+            alt="i-scream math with Oman"
+            width={44}
+            height={44}
+          />
+          <div>
+            <p className="brand-title">{t("i-scream math with Oman")}</p>
+            <p className="brand-sub">{t("Cambridge-aligned math showcase")}</p>
+          </div>
         </div>
-      </div>
+      </Link>
       <div className="nav-links">
         {navItems.map((item) => (
           <Link key={item.href} href={item.href} className="nav-link">

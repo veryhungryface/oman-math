@@ -1,82 +1,191 @@
 "use client";
 
 import Link from "next/link";
-import ModuleCard from "@/components/ModuleCard";
-import SectionHeader from "@/components/SectionHeader";
-import Tag from "@/components/Tag";
-import { modules } from "@/data/modules";
 import { useI18n } from "@/lib/i18n";
+import { students } from "@/data/samples";
+import { modules } from "@/data/modules";
 
-const strands = [
-  "Number",
-  "Operations",
-  "Geometry",
-  "Measurement",
-  "Pre-Algebra",
-  "Data/Probability"
+type WeekLessonData = {
+  date: string;
+  moduleId: string;
+  status: "done" | "today" | "next" | "upcoming";
+};
+
+const weekSchedule: WeekLessonData[] = [
+  { date: "Wed, Mar 5", moduleId: "B-2", status: "today" },
+  { date: "Thu, Mar 6", moduleId: "C-1", status: "next" },
+  { date: "Fri, Mar 7", moduleId: "C-3", status: "upcoming" },
+  { date: "Mon, Mar 3", moduleId: "A-1", status: "done" },
+  { date: "Tue, Mar 4", moduleId: "B-1", status: "done" },
 ];
+
+function getModuleById(id: string) {
+  return modules.find((m) => m.id === id);
+}
+
+function getClassStatsForModule(moduleId: string) {
+  const moduleStudents = students.filter((s) => s.moduleTaken === moduleId);
+  if (moduleStudents.length === 0) {
+    return {
+      K: 0,
+      U: 0,
+      A: 0,
+      R: 0,
+      atRiskNames: [],
+    };
+  }
+
+  const K = Math.round(
+    moduleStudents.reduce((sum, s) => sum + s.cognitiveProfile.K, 0) / moduleStudents.length
+  );
+  const U = Math.round(
+    moduleStudents.reduce((sum, s) => sum + s.cognitiveProfile.U, 0) / moduleStudents.length
+  );
+  const A = Math.round(
+    moduleStudents.reduce((sum, s) => sum + s.cognitiveProfile.A, 0) / moduleStudents.length
+  );
+  const R = Math.round(
+    moduleStudents.reduce((sum, s) => sum + s.cognitiveProfile.R, 0) / moduleStudents.length
+  );
+
+  const atRiskNames = moduleStudents
+    .filter((s) => s.riskLevel === "risk" || s.riskLevel === "watch")
+    .map((s) => s.name);
+
+  return { K, U, A, R, atRiskNames };
+}
+
+function KuarBar({ level, value }: { level: string; value: number }) {
+  const isLow = value < 70;
+  const bgColor = isLow ? "#fce8e6" : "#f1ece7";
+  const fillColor = isLow ? "#d57d3d" : "#2f6f6a";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: "0.6rem" }}>
+      <span style={{ minWidth: "20px", fontWeight: 700, fontSize: "0.9rem" }}>{level}</span>
+      <div style={{ flex: 1, height: "20px", background: bgColor, borderRadius: "10px", overflow: "hidden" }}>
+        <div
+          style={{
+            width: `${Math.min(value, 100)}%`,
+            height: "100%",
+            background: fillColor,
+            borderRadius: "10px",
+            transition: "width 0.3s ease",
+          }}
+        />
+      </div>
+      <span style={{ minWidth: "50px", textAlign: "right", fontWeight: 600, fontSize: "0.9rem" }}>
+        {value}%
+      </span>
+    </div>
+  );
+}
 
 export default function TeacherHomePage() {
   const { t } = useI18n();
+
   return (
-    <div className="split-layout">
-      <div>
-        <SectionHeader
-          eyebrow={t("Teacher Home")}
-          title={t("Select grade band and lesson module")}
-          description={t("Start with a 5-7 minute interactive lesson, then launch a 6-8 minute adaptive assessment.")}
-        />
-        <div className="module-tags" aria-label="Grade bands">
-          <Tag label="Band 1-5" tone="accent" />
-          <Tag label="Band 6-10" tone="accent" />
-          <Tag label="Band 11-12" tone="accent" />
-        </div>
-        <div className="module-tags" aria-label="Strand filters">
-          {strands.map((strand) => (
-            <Tag key={strand} label={strand} tone="soft" />
-          ))}
-        </div>
-        <div className="module-grid" style={{ marginTop: "1.5rem" }}>
-          {modules.map((m) => (
-            <ModuleCard key={m.id} module={m} />
-          ))}
-        </div>
-        <div className="card" style={{ marginTop: "1.5rem" }}>
-          <h3>{t("Start lesson")}</h3>
-          <p className="subtext">
-            {t("Projector-ready lesson player with quick polls and misconception prompts.")}
-          </p>
-          <div className="module-actions" style={{ marginTop: "1rem" }}>
-            <Link className="primary-button" href="/lesson/B-1">
-              {t("Start Lesson")}
-            </Link>
-            <Link className="ghost-button" href="/assessment/B-1-demo">
-              {t("Start Assessment")}
-            </Link>
-          </div>
-        </div>
+    <div style={{ maxWidth: "1000px" }}>
+      {/* Header */}
+      <div style={{ marginBottom: "2rem" }}>
+        <p className="eyebrow">{t("Teacher Home")}</p>
+        <h2 style={{ marginBottom: "0.5rem" }}>{t("This Week's Lessons")}</h2>
+        <p className="subtext">28 {t("students")} · {t("Class")} CL-8B</p>
       </div>
-      <aside className="info-grid">
-        <div className="card">
-          <h4>{t("Today in class")}</h4>
-          <p className="subtext">
-            {t("Average mastery is trending up in Number and Geometry. Reasoning items still need targeted support.")}
-          </p>
-        </div>
-        <div className="card">
-          <h4>{t("Recommended next lesson")}</h4>
-          <p className="detail-value">{t("Algebra and Graphs Studio")}</p>
-          <p className="subtext">{t("Focus on table to graph connection.")}</p>
-        </div>
-        <div className="card">
-          <h4>{t("Recent progress")}</h4>
-          <ul className="list">
-            <li>{t("Concept mastery +6% week over week")}</li>
-            <li>{t("Reasoning items correct: 58%")}</li>
-            <li>{t("Students ready for extension: 5")}</li>
-          </ul>
-        </div>
-      </aside>
+
+      {/* Timeline */}
+      <div className="timeline-root">
+        {weekSchedule.map((lesson, idx) => {
+          const module = getModuleById(lesson.moduleId);
+          if (!module) return null;
+
+          const stats = getClassStatsForModule(lesson.moduleId);
+          const isTodayOrDone = lesson.status === "today" || lesson.status === "done";
+          const isUpcoming = lesson.status === "upcoming" || lesson.status === "next";
+
+          return (
+            <div key={lesson.moduleId} className="timeline-item">
+              {/* Timeline dot */}
+              <div className={`timeline-dot timeline-dot-${lesson.status}`} />
+
+              {/* Card */}
+              <div className={`timeline-card timeline-card-${lesson.status}`}>
+                {/* Header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.8rem" }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.4rem" }}>
+                      <span className={`status-badge status-${lesson.status}`}>
+                        {lesson.status === "done" && "✓ DONE"}
+                        {lesson.status === "today" && "● TODAY"}
+                        {lesson.status === "next" && "PREPARE"}
+                        {lesson.status === "upcoming" && "SCHEDULED"}
+                      </span>
+                      <span style={{ fontSize: "0.85rem", color: "var(--muted)" }}>{lesson.date}</span>
+                    </div>
+                    <h3 style={{ fontSize: "1.1rem", marginBottom: "0.2rem" }}>{module.title}</h3>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <p style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--accent)" }}>{module.id}</p>
+                    <p style={{ fontSize: "0.8rem", color: "var(--muted)" }}>Band {module.band}</p>
+                  </div>
+                </div>
+
+                {/* Mastery bars (only for today and done) */}
+                {isTodayOrDone && (
+                  <div style={{ marginBottom: "1rem", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
+                    <p style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--muted)", fontWeight: 700, marginBottom: "0.6rem" }}>
+                      Class Mastery
+                    </p>
+                    <KuarBar level="K" value={stats.K} />
+                    <KuarBar level="U" value={stats.U} />
+                    <KuarBar level="A" value={stats.A} />
+                    <KuarBar level="R" value={stats.R} />
+                  </div>
+                )}
+
+                {/* At-risk students (only for today and done) */}
+                {isTodayOrDone && stats.atRiskNames.length > 0 && (
+                  <div style={{ marginBottom: "1rem", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
+                    <p style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px", color: "#c0392b", fontWeight: 700, marginBottom: "0.4rem" }}>
+                      ⚠ {t("Below threshold")} ({`<70%`})
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                      {stats.atRiskNames.map((name) => (
+                        <span key={name} className="student-chip" style={{ borderColor: "#c0392b" }}>
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Actions (only for today) */}
+                {lesson.status === "today" && (
+                  <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+                    <Link href={`/lesson/${module.id}`} className="primary-button">
+                      {t("Start Lesson")} →
+                    </Link>
+                    <Link href={`/assessment/B-1-demo`} className="ghost-button">
+                      {t("View Assessment")}
+                    </Link>
+                  </div>
+                )}
+
+                {/* Prepare banner (for next) */}
+                {lesson.status === "next" && (
+                  <div style={{ padding: "0.8rem", background: "#f6e2d1", borderRadius: "12px", fontSize: "0.9rem" }}>
+                    <p style={{ fontWeight: 600, margin: "0 0 0.3rem 0" }}>📋 {t("Prepare for tomorrow")}</p>
+                    <p style={{ color: "var(--muted)", fontSize: "0.85rem" }}>
+                      {t("Focus areas")}: {module.cognitiveFocus.includes("R") ? "Reasoning • " : ""}
+                      {module.cognitiveFocus.includes("A") ? "Application" : ""}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

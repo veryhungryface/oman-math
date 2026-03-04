@@ -4,12 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { modules } from "@/data/modules";
 import Tag from "@/components/Tag";
 import LessonContent from "@/components/lessons/LessonContent";
+import ActivityStepper from "@/components/lessons/ActivityStepper";
+import InteractiveActivities from "@/components/lessons/InteractiveActivities";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
 type LessonPageProps = {
   params: { moduleId: string };
 };
+
+type FullscreenTab = "lesson" | "activities";
 
 export default function LessonPage({ params }: LessonPageProps) {
   const { t } = useI18n();
@@ -26,11 +30,17 @@ export default function LessonPage({ params }: LessonPageProps) {
   };
   const lessonRef = useRef<HTMLDivElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenTab, setFullscreenTab] = useState<FullscreenTab>("lesson");
 
   useEffect(() => {
     function handleFullscreenChange() {
       const active = Boolean(document.fullscreenElement);
       setIsFullscreen(active);
+      if (active) {
+        document.documentElement.classList.add("lesson-fullscreen-active");
+      } else {
+        document.documentElement.classList.remove("lesson-fullscreen-active");
+      }
     }
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
@@ -48,62 +58,84 @@ export default function LessonPage({ params }: LessonPageProps) {
   return (
     <div ref={lessonRef} className={`split-layout lesson-shell ${isFullscreen ? "lesson-fullscreen" : ""}`}>
       <div>
-        <div className="card" style={{ marginBottom: "1.5rem" }}>
-          <p className="eyebrow">{t("Lesson Player")}</p>
-          <h2>{t(title)}</h2>
-          <p className="subtext">{t(subtitle)}</p>
-          <div className="module-tags" style={{ marginTop: "1rem" }}>
-            {(moduleItem?.strands ?? []).map((strand) => (
-              <Tag key={strand} label={strand} tone="soft" />
-            ))}
-            <Tag label={`Module ${moduleItem?.id ?? ""}`} tone="accent" />
+        {!isFullscreen && (
+          <div className="card" style={{ marginBottom: "1.5rem" }}>
+            <p className="eyebrow">{t("Lesson Player")}</p>
+            <h2>{t(title)}</h2>
+            <p className="subtext">{t(subtitle)}</p>
+            <div className="module-tags" style={{ marginTop: "1rem" }}>
+              {(moduleItem?.strands ?? []).map((strand) => (
+                <Tag key={strand} label={strand} tone="soft" />
+              ))}
+              <Tag label={`Module ${moduleItem?.id ?? ""}`} tone="accent" />
+            </div>
+            <div className="module-actions" style={{ marginTop: "1rem" }}>
+              <button className="ghost-button" type="button" onClick={toggleFullscreen}>
+                {isFullscreen ? t("Exit Fullscreen") : t("Fullscreen")}
+              </button>
+            </div>
           </div>
-          <div className="module-actions" style={{ marginTop: "1rem" }}>
+        )}
+
+        {isFullscreen && (
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", paddingBottom: "1rem", borderBottom: "1px solid #e7e3df" }}>
+            <h2 style={{ margin: 0 }}>{t(title)}</h2>
             <button className="ghost-button" type="button" onClick={toggleFullscreen}>
-              {isFullscreen ? t("Exit Fullscreen") : t("Fullscreen")}
+              {t("Exit Fullscreen")}
             </button>
           </div>
+        )}
+
+        {/* Tab selector */}
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", borderBottom: "2px solid #e7e3df" }}>
+          <button
+            onClick={() => setFullscreenTab("lesson")}
+            style={{
+              padding: "0.8rem 1.5rem",
+              background: fullscreenTab === "lesson" ? "#fff" : "transparent",
+              borderBottom: fullscreenTab === "lesson" ? "3px solid #d57d3d" : "none",
+              color: fullscreenTab === "lesson" ? "#d57d3d" : "#5b534c",
+              border: "none",
+              fontWeight: 600,
+              cursor: "pointer",
+              fontSize: "1rem",
+            }}
+          >
+            {t("Lesson")}
+          </button>
+          <button
+            onClick={() => setFullscreenTab("activities")}
+            style={{
+              padding: "0.8rem 1.5rem",
+              background: fullscreenTab === "activities" ? "#fff" : "transparent",
+              borderBottom: fullscreenTab === "activities" ? "3px solid #d57d3d" : "none",
+              color: fullscreenTab === "activities" ? "#d57d3d" : "#5b534c",
+              border: "none",
+              fontWeight: 600,
+              cursor: "pointer",
+              fontSize: "1rem",
+            }}
+          >
+            {t("Interactive Canvas")}
+          </button>
         </div>
-        <LessonContent moduleId={params.moduleId} />
-        <div className="card" style={{ marginTop: "1.5rem" }}>
-          <h4>{t("Student activities")}</h4>
-          <p className="subtext">{t("Short, high-participation routines aligned to the lesson focus.")}</p>
-          <div className="activity-grid" style={{ marginTop: "1rem" }}>
-            {activities.map((activity) => (
-              <div key={activity.title} className="activity-card">
-                <div className="activity-head">
-                  <p className="detail-label">{t("Activity")}</p>
-                  <h5>{activity.title}</h5>
-                </div>
-                <div className="activity-body">
-                  <p className="detail-label">{t("Student action")}</p>
-                  <p className="detail-value">{activity.studentAction}</p>
-                  <p className="detail-label">{t("Teacher move")}</p>
-                  <p className="detail-value">{activity.teacherMove}</p>
-                  <div className="activity-meta">
-                    <div>
-                      <p className="detail-label">{t("Grouping")}</p>
-                      <p className="detail-value">{activity.grouping}</p>
-                    </div>
-                    <div>
-                      <p className="detail-label">{t("Time")}</p>
-                      <p className="detail-value">{activity.time}</p>
-                    </div>
-                    <div>
-                      <p className="detail-label">{t("Evidence")}</p>
-                      <p className="detail-value">{activity.evidence}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="module-actions" style={{ marginTop: "1.5rem" }}>
-          <Link className="primary-button" href={`/assessment/${moduleItem?.id ?? "demo"}-demo`}>
-            {t("Start Assessment")}
-          </Link>
-        </div>
+
+        {/* Lesson tab content */}
+        {fullscreenTab === "lesson" && (
+          <>
+            <LessonContent moduleId={params.moduleId} />
+            <div className="module-actions" style={{ marginTop: "1.5rem" }}>
+              <Link className="primary-button" href={`/assessment/${moduleItem?.id ?? "demo"}-demo`}>
+                {t("Start Assessment")}
+              </Link>
+            </div>
+          </>
+        )}
+
+        {/* Activities tab content */}
+        {fullscreenTab === "activities" && (
+          <InteractiveActivities moduleId={params.moduleId} />
+        )}
       </div>
       <aside className={`card lesson-aside ${isFullscreen ? "lesson-aside-hidden" : ""}`}>
         <h4>{t("Teacher guide")}</h4>

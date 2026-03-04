@@ -28,6 +28,7 @@ const dict: Dict = {
   "Reveal Hint": { ar: "كشف التلميح" },
   "Lesson Player": { ar: "مشغل الدرس" },
   "Interactive canvas": { ar: "لوحة تفاعلية" },
+  "Interactive Canvas": { ar: "لوحة تفاعلية" },
   "Teacher guide": { ar: "دليل المعلم" },
   "Student sync code": { ar: "رمز مزامنة الطالب" },
   "Oman Mathematics Demo": { ar: "عرض الرياضيات لعُمان" },
@@ -142,7 +143,57 @@ const dict: Dict = {
   "Teacher Prompt": { ar: "سؤال للمعلم" },
   "Close": { ar: "إغلاق" },
   "Fullscreen": { ar: "ملء الشاشة" },
-  "Exit Fullscreen": { ar: "إنهاء ملء الشاشة" }
+  "Exit Fullscreen": { ar: "إنهاء ملء الشاشة" },
+  // Stepper labels
+  "Mark done": { ar: "تحديد كمنتهٍ" },
+  "Next step": { ar: "الخطوة التالية" },
+  "Step complete": { ar: "مكتملة" },
+  // Scenario context
+  "Help the shopkeeper measure out 3/4 kg of dates in the Muscat market.": {
+    ar: "ساعد صاحب المتجر على قياس 3/4 كيلوغرام من التمر في سوق مسقط."
+  },
+  "Omani Date Market Challenge": { ar: "تحدي سوق التمر العماني" },
+  "Design a school garden with exactly 24 square meters. Multiple solutions exist!": {
+    ar: "صمم حديقة مدرسية بمساحة 24 متر مربع بالضبط. هناك حلول متعددة!"
+  },
+  "School Garden Design": { ar: "تصميم حديقة المدرسة" },
+  "Vote for your favorite sport. Need at least 10 total votes to see results.": {
+    ar: "صوّت لرياضتك المفضلة. تحتاج إلى 10 أصوات على الأقل لرؤية النتائج."
+  },
+  "Classroom Sports Poll": { ar: "استطلاع الرياضة في الفصل" },
+  "Football": { ar: "كرة القدم" },
+  "Basketball": { ar: "كرة السلة" },
+  "Swimming": { ar: "السباحة" },
+  "Cricket": { ar: "الكريكيت" },
+  "Votes needed:": { ar: "الأصوات المطلوبة:" },
+  "Most voted:": { ar: "الأكثر أصواتاً:" },
+  "Set the taxi fare equation using base fare and distance rate.": {
+    ar: "حدد معادلة أجرة التاكسي باستخدام الأجرة الأساسية ومعدل المسافة."
+  },
+  "Muscat Taxi Fare": { ar: "أجرة التاكسي في مسقط" },
+  "Complete the Islamic geometric tile pattern with a 90° rotation.": {
+    ar: "أكمل نمط البلاط الهندسي الإسلامي بدوران 90 درجة."
+  },
+  "Oman Geometric Tile": { ar: "البلاط الهندسي العماني" },
+  "Roll the dice 30 times to observe the probability converging to 1/6.": {
+    ar: "رمِ النرد 30 مرة لمراقبة الاحتمالية التي تتقارب إلى 1/6."
+  },
+  "Weather Prediction Experiment": { ar: "تجربة التنبؤ بالطقس" },
+  "Rolls remaining:": { ar: "الرميات المتبقية:" },
+  "Adjust the parabola so the soccer ball lands between x=4 and x=6.": {
+    ar: "اضبط القطع المكافئ بحيث تهبط كرة القدم بين x=4 و x=6."
+  },
+  "Soccer Ball Trajectory": { ar: "مسار كرة القدم" },
+  "Set the bearing to 045° for the harbor route.": {
+    ar: "ضبط الاتجاه على 045° لمسار الميناء."
+  },
+  "Muscat Harbor Navigation": { ar: "ملاحة ميناء مسقط" },
+  "Find where the car momentarily stops (zero velocity).": {
+    ar: "ابحث عن المكان الذي تتوقف فيه السيارة للحظة (السرعة الصفرية)."
+  },
+  "Muscat Highway Driving": { ar: "القيادة على طريق مسقط السريع" },
+  "Success! Challenge complete.": { ar: "نجاح! التحدي مكتمل." },
+  "In progress—adjust to meet the challenge.": { ar: "جاري—اضبط لتحقيق التحدي." }
 };
 
 type I18nContextType = {

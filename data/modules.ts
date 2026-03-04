@@ -1,4 +1,4 @@
-export type ModuleBand = "1-5" | "6-10" | "11-12";
+export type ModuleBand = "1-4" | "5-10" | "11-12";
 
 export type LessonActivity = {
   title: string;
@@ -33,7 +33,7 @@ export type ModuleItem = {
 export const modules: ModuleItem[] = [
   {
     id: "A-1",
-    band: "1-5",
+    band: "1-4",
     title: "Number Sense and Fraction Lab",
     subtitle: "Fractions, decimals, percentages, ratio",
     strands: ["Number", "Operations", "Measurement"],
@@ -115,7 +115,7 @@ export const modules: ModuleItem[] = [
   },
   {
     id: "A-2",
-    band: "1-5",
+    band: "1-4",
     title: "Measure and Shape Explorer",
     subtitle: "Time, length, area, symmetry",
     strands: ["Measurement", "Geometry", "Spatial Sense"],
@@ -193,7 +193,7 @@ export const modules: ModuleItem[] = [
   },
   {
     id: "A-3",
-    band: "1-5",
+    band: "1-4",
     title: "Data and Decision Junior",
     subtitle: "Graphs, pictograms, chance",
     strands: ["Data", "Probability"],
@@ -270,7 +270,7 @@ export const modules: ModuleItem[] = [
   },
   {
     id: "B-1",
-    band: "6-10",
+    band: "5-10",
     title: "Algebra and Graphs Studio",
     subtitle: "Equations, sequences, functions",
     strands: ["Pre-Algebra", "Algebra", "Functions"],
@@ -347,7 +347,7 @@ export const modules: ModuleItem[] = [
   },
   {
     id: "B-2",
-    band: "6-10",
+    band: "5-10",
     title: "Geometry, Scale and Transformation Lab",
     subtitle: "Coordinates, scale, bearing, area",
     strands: ["Geometry", "Measurement", "Spatial Sense"],
@@ -424,7 +424,7 @@ export const modules: ModuleItem[] = [
   },
   {
     id: "B-3",
-    band: "6-10",
+    band: "5-10",
     title: "Statistics and Probability Investigator",
     subtitle: "Data, averages, experimental chance",
     strands: ["Data", "Probability"],

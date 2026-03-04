@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { InlineMath, BlockMath } from "react-katex";
 
 export default function QuadraticExplorer() {
   const { t } = useI18n();
@@ -19,6 +20,10 @@ export default function QuadraticExplorer() {
       : disc === 0
         ? `1 repeated root: x = ${(-b / (2 * a)).toFixed(2)}`
         : "No real roots";
+
+  // Challenge: a < 0 AND rightRoot in [4, 6]
+  const rightRoot = disc > 0 ? Math.max((-b + Math.sqrt(disc)) / (2 * a), (-b - Math.sqrt(disc)) / (2 * a)) : null;
+  const isSuccess = a < 0 && rightRoot !== null && rightRoot >= 4 && rightRoot <= 6;
 
   const svgW = 300;
   const svgH = 300;
@@ -40,7 +45,30 @@ export default function QuadraticExplorer() {
   return (
     <div className="interactive-widget">
       <h4>{t("Quadratic Explorer")}</h4>
-      <p className="subtext">y = {a}x² + ({b})x + {c}</p>
+      <div className="scenario-panel">
+        <div className="scenario-illustration">
+          <svg className="scenario-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Soccer field */}
+            <rect x="10" y="30" width="80" height="40" fill="#6DAA2D" stroke="#333" strokeWidth="1"/>
+            {/* Goal line */}
+            <line x1="85" y1="30" x2="85" y2="70" stroke="#FFF" strokeWidth="2"/>
+            {/* Parabola trajectory */}
+            <path d="M 20 65 Q 50 20 80 60" fill="none" stroke="#FDB913" strokeWidth="2" strokeDasharray="3,2"/>
+            {/* Ball */}
+            <circle cx="20" cy="65" r="2.5" fill="#000"/>
+            {/* Goal posts */}
+            <line x1="85" y1="40" x2="100" y2="40" stroke="#FFF" strokeWidth="1.5"/>
+            <line x1="85" y1="60" x2="100" y2="60" stroke="#FFF" strokeWidth="1.5"/>
+          </svg>
+        </div>
+        <div className="scenario-text">
+          <p className="detail-label">{t("Soccer Ball Trajectory")}</p>
+          <p>{t("Adjust the parabola so the soccer ball lands between x=4 and x=6.")}</p>
+        </div>
+      </div>
+      <div style={{ marginTop: "0.8rem", padding: "0.8rem", background: "#f7f1ea", borderRadius: "12px", fontSize: "1.1em" }}>
+        <BlockMath math={`y = ${a}x^{2} + (${b})x + ${c}`} />
+      </div>
       <div className="slider-row">
         <label>a: {a}</label>
         <input type="range" min={-3} max={3} step={0.5} value={a} onChange={(e) => setA(Number(e.target.value))} className="range-slider" />
@@ -64,6 +92,15 @@ export default function QuadraticExplorer() {
         <div className="conv-card"><p className="detail-label">{t("Vertex")}</p><p className="conv-value">({vertexX.toFixed(1)}, {vertexY.toFixed(1)})</p></div>
         <div className="conv-card"><p className="detail-label">{t("Roots")}</p><p className="conv-value" style={{ fontSize: "0.8rem" }}>{rootsText}</p></div>
       </div>
+      {isSuccess ? (
+        <div className="hint-text">
+          {t("Success! Challenge complete.")}
+        </div>
+      ) : (
+        <div className="challenge-miss">
+          {t("In progress—adjust to meet the challenge.")}
+        </div>
+      )}
       <div className="lesson-task">
         <h5>{t("Try this")}</h5>
         <ul className="task-list">

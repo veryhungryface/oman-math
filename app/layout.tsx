@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 import PrimaryNav from "@/components/PrimaryNav";
 import ClientShell from "@/components/ClientShell";

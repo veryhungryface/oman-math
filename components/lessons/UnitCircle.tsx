@@ -9,6 +9,7 @@ export default function UnitCircle() {
   const rad = (deg * Math.PI) / 180;
   const cosVal = Math.cos(rad);
   const sinVal = Math.sin(rad);
+  const isSuccess = Math.abs(deg - 45) <= 3;
 
   const svgS = 300;
   const ctr = svgS / 2;
@@ -19,6 +20,31 @@ export default function UnitCircle() {
   return (
     <div className="interactive-widget">
       <h4>{t("Unit Circle & Trig Values")}</h4>
+      <div className="scenario-panel">
+        <div className="scenario-illustration">
+          <svg className="scenario-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Compass rose */}
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#999" strokeWidth="1"/>
+            {/* Cardinal directions */}
+            <text x="50" y="25" textAnchor="middle" fontSize="8" fontWeight="bold">N</text>
+            <text x="75" y="52" textAnchor="middle" fontSize="8" fontWeight="bold">E</text>
+            <text x="50" y="75" textAnchor="middle" fontSize="8" fontWeight="bold">S</text>
+            <text x="25" y="52" textAnchor="middle" fontSize="8" fontWeight="bold">W</text>
+            {/* Center */}
+            <circle cx="50" cy="50" r="2" fill="#333"/>
+            {/* Bearing needle (045°) - NE direction */}
+            <line x1="50" y1="50" x2="65" y2="35" stroke="#d57d3d" strokeWidth="1.5"/>
+            <polygon points="65,35 64,36 66,36" fill="#d57d3d"/>
+            {/* Ship silhouette */}
+            <polygon points="50,65 48,70 52,70" fill="#333"/>
+            <rect x="49" y="68" width="2" height="2" fill="#d57d3d"/>
+          </svg>
+        </div>
+        <div className="scenario-text">
+          <p className="detail-label">{t("Muscat Harbor Navigation")}</p>
+          <p>{t("Set the bearing to 045° for the harbor route.")}</p>
+        </div>
+      </div>
       <div className="slider-row">
         <label>{t("Angle")}: {deg}° = {(rad).toFixed(3)} rad</label>
         <input type="range" min={0} max={360} value={deg} onChange={(e) => setDeg(Number(e.target.value))} className="range-slider" />
@@ -38,6 +64,15 @@ export default function UnitCircle() {
         <div className="conv-card"><p className="detail-label">sin θ</p><p className="conv-value">{sinVal.toFixed(4)}</p></div>
         <div className="conv-card"><p className="detail-label">tan θ</p><p className="conv-value">{cosVal !== 0 ? (sinVal / cosVal).toFixed(4) : "∞"}</p></div>
       </div>
+      {isSuccess ? (
+        <div className="hint-text">
+          {t("Success! Challenge complete.")}
+        </div>
+      ) : (
+        <div className="challenge-miss">
+          {t("In progress—adjust to meet the challenge.")}
+        </div>
+      )}
       <div className="lesson-task">
         <h5>{t("Try this")}</h5>
         <ul className="task-list">
