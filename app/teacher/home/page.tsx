@@ -96,8 +96,8 @@ export default function TeacherHomePage() {
       {/* Timeline */}
       <div className="timeline-root">
         {weekSchedule.map((lesson, idx) => {
-          const module = getModuleById(lesson.moduleId);
-          if (!module) return null;
+          const moduleData = getModuleById(lesson.moduleId);
+          if (!moduleData) return null;
 
           const stats = getClassStatsForModule(lesson.moduleId);
           const isTodayOrDone = lesson.status === "today" || lesson.status === "done";
@@ -122,11 +122,11 @@ export default function TeacherHomePage() {
                       </span>
                       <span style={{ fontSize: "0.85rem", color: "var(--muted)" }}>{lesson.date}</span>
                     </div>
-                    <h3 style={{ fontSize: "1.1rem", marginBottom: "0.2rem" }}>{module.title}</h3>
+                    <h3 style={{ fontSize: "1.1rem", marginBottom: "0.2rem" }}>{moduleData.title}</h3>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <p style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--accent)" }}>{module.id}</p>
-                    <p style={{ fontSize: "0.8rem", color: "var(--muted)" }}>Band {module.band}</p>
+                    <p style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--accent)" }}>{moduleData.id}</p>
+                    <p style={{ fontSize: "0.8rem", color: "var(--muted)" }}>Band {moduleData.band}</p>
                   </div>
                 </div>
 
@@ -162,7 +162,7 @@ export default function TeacherHomePage() {
                 {/* Actions (only for today) */}
                 {lesson.status === "today" && (
                   <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
-                    <Link href={`/lesson/${module.id}`} className="primary-button">
+                    <Link href={`/lesson/${moduleData.id}`} className="primary-button">
                       {t("Start Lesson")} →
                     </Link>
                     <Link href={`/assessment/B-1-demo`} className="ghost-button">
@@ -176,8 +176,8 @@ export default function TeacherHomePage() {
                   <div style={{ padding: "0.8rem", background: "#f6e2d1", borderRadius: "12px", fontSize: "0.9rem" }}>
                     <p style={{ fontWeight: 600, margin: "0 0 0.3rem 0" }}>📋 {t("Prepare for tomorrow")}</p>
                     <p style={{ color: "var(--muted)", fontSize: "0.85rem" }}>
-                      {t("Focus areas")}: {module.cognitiveFocus.includes("R") ? "Reasoning • " : ""}
-                      {module.cognitiveFocus.includes("A") ? "Application" : ""}
+                      {t("Focus areas")}: {moduleData.cognitiveFocus.includes("R") ? "Reasoning • " : ""}
+                      {moduleData.cognitiveFocus.includes("A") ? "Application" : ""}
                     </p>
                   </div>
                 )}

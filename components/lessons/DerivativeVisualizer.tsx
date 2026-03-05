@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+// @ts-ignore
 import { InlineMath, BlockMath } from "react-katex";
 
 export default function DerivativeVisualizer() {
