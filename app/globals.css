@@ -1550,7 +1550,8 @@ html.lesson-fullscreen-active .site-footer {
 
   .split-layout,
   .assessment-shell,
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  .dashboard-grid,
+  .fraction-chart-grid {
+    grid-template-columns: 1fr !important;
   }
 }
