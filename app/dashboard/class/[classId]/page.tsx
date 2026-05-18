@@ -3,7 +3,13 @@
 import ConceptRadar from "@/components/charts/ConceptRadar";
 import KpiCard from "@/components/KpiCard";
 import SectionHeader from "@/components/SectionHeader";
-import { classId, studentReports } from "@/data/samples";
+import {
+  classId,
+  fractionDiagnostics,
+  fractionMisconceptionCatalog,
+  fractionSkillCatalog,
+  studentReports
+} from "@/data/samples";
 import { useI18n } from "@/lib/i18n";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -153,6 +159,165 @@ export default function DashboardPage({ params }: DashboardPageProps) {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <SectionHeader
+        eyebrow={t("Fraction Diagnostic")}
+        title={t("Fraction Misconception Map")}
+        description={t("See at a glance which sub-skills each student is missing and which misconceptions are currently active.")}
+      />
+
+      <div className="card" style={{ marginBottom: "1.5rem", overflowX: "auto" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
+          {fractionMisconceptionCatalog.map((m) => (
+            <span
+              key={m.code}
+              title={m.description}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.25rem 0.6rem",
+                background: "#fbeee2",
+                color: "#7a4a1f",
+                borderRadius: "999px",
+                fontSize: "0.78rem",
+                border: "1px solid #f1d6b8"
+              }}
+            >
+              <strong>{m.code}</strong>
+              <span>{m.short}</span>
+            </span>
+          ))}
+        </div>
+
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "separate",
+            borderSpacing: "4px",
+            minWidth: "720px",
+            fontSize: "0.85rem"
+          }}
+        >
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "0.4rem 0.6rem", color: "#5b534c" }}>
+                {t("Student")}
+              </th>
+              {fractionSkillCatalog.map((skill) => (
+                <th
+                  key={skill.key}
+                  style={{ padding: "0.4rem 0.4rem", color: "#5b534c", fontWeight: 600 }}
+                >
+                  {t(skill.label)}
+                </th>
+              ))}
+              <th style={{ textAlign: "left", padding: "0.4rem 0.6rem", color: "#5b534c" }}>
+                {t("Active misconceptions")}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {fractionDiagnostics.map((row) => {
+              const weakest = fractionSkillCatalog.reduce((min, s) =>
+                row.skills[s.key] < row.skills[min.key] ? s : min
+              , fractionSkillCatalog[0]);
+              return (
+                <tr key={row.studentId}>
+                  <td style={{ padding: "0.5rem 0.6rem", whiteSpace: "nowrap" }}>
+                    <Link
+                      href={`/report/student/${row.studentId}`}
+                      style={{ color: "#2a2421", textDecoration: "none", fontWeight: 600 }}
+                    >
+                      {row.studentName}
+                    </Link>
+                    <div className="subtext" style={{ fontSize: "0.72rem" }}>
+                      {row.studentId} · {t("Band")} {row.gradeBand}
+                    </div>
+                  </td>
+                  {fractionSkillCatalog.map((skill) => {
+                    const value = row.skills[skill.key];
+                    const isWeakest = skill.key === weakest.key;
+                    return (
+                      <td
+                        key={skill.key}
+                        title={`${t(skill.label)}: ${value}%`}
+                        style={{
+                          textAlign: "center",
+                          padding: "0.5rem 0.4rem",
+                          background: scoreToColor(value),
+                          borderRadius: "8px",
+                          fontWeight: 600,
+                          color: value >= 60 ? "#2a2421" : "#7a1f1f",
+                          outline: isWeakest ? "2px solid #c0392b" : "none",
+                          outlineOffset: "-2px"
+                        }}
+                      >
+                        {value}
+                      </td>
+                    );
+                  })}
+                  <td style={{ padding: "0.5rem 0.6rem" }}>
+                    {row.activeMisconceptions.length === 0 ? (
+                      <span className="subtext" style={{ fontSize: "0.78rem" }}>
+                        {t("None detected")}
+                      </span>
+                    ) : (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                        {row.activeMisconceptions.map((code) => {
+                          const m = fractionMisconceptionCatalog.find((x) => x.code === code)!;
+                          return (
+                            <span
+                              key={code}
+                              title={m.description}
+                              style={{
+                                padding: "0.15rem 0.5rem",
+                                background: "#fce8e6",
+                                color: "#8a2a1f",
+                                borderRadius: "999px",
+                                fontSize: "0.72rem",
+                                border: "1px solid #f3c2bb",
+                                fontWeight: 600
+                              }}
+                            >
+                              {code} · {m.short}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div style={{ marginTop: "1rem", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "0.75rem" }}>
+          {fractionDiagnostics
+            .filter((r) => r.activeMisconceptions.length > 0)
+            .slice(0, 4)
+            .map((row) => (
+              <div
+                key={row.studentId}
+                style={{
+                  padding: "0.8rem 1rem",
+                  background: "#fff6ef",
+                  borderRadius: "10px",
+                  border: "1px solid #f1d6b8"
+                }}
+              >
+                <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>{row.studentName}</div>
+                <div className="subtext" style={{ fontSize: "0.78rem", marginBottom: "0.5rem" }}>
+                  <strong>{t("Evidence")}:</strong> {row.evidenceSample}
+                </div>
+                <div className="subtext" style={{ fontSize: "0.78rem" }}>
+                  <strong>{t("Next action")}:</strong> {row.recommendedAction}
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>
